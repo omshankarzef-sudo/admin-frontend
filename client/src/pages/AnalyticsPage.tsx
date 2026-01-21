@@ -10,8 +10,6 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
-  PieChart,
-  Pie,
   Cell
 } from "recharts";
 import { useStore } from "@/lib/store";
@@ -28,7 +26,6 @@ import {
   BookOpen,
   ClipboardList
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
@@ -319,8 +316,8 @@ export default function AnalyticsPage() {
               <div className="space-y-8 animate-in fade-in zoom-in-95 duration-300">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {[
-                    { label: "Attendance", value: `${selectedStudent.attendance}%`, color: "text-emerald-500" },
-                    { label: "Avg Score", value: `${selectedStudent.averageScore}%`, color: "text-primary" },
+                    { label: "Attendance", value: `${selectedStudent?.attendance ?? 0}%`, color: "text-emerald-500" },
+                    { label: "Avg Score", value: `${selectedStudent?.averageScore ?? 0}%`, color: "text-primary" },
                     { label: "Highest Score", value: "98%", color: "text-emerald-600" },
                     { label: "Quizzes", value: "24", color: "text-amber-500" },
                   ].map((stat, i) => (
@@ -341,9 +338,9 @@ export default function AnalyticsPage() {
                     <CardContent className="h-[300px]">
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={[
-                          { name: 'T1', score: selectedStudent.averageScore - 5 },
-                          { name: 'T2', score: selectedStudent.averageScore + 2 },
-                          { name: 'T3', score: selectedStudent.averageScore },
+                          { name: 'T1', score: (selectedStudent?.averageScore ?? 70) - 5 },
+                          { name: 'T2', score: (selectedStudent?.averageScore ?? 70) + 2 },
+                          { name: 'T3', score: selectedStudent?.averageScore ?? 70 },
                         ]}>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
                           <XAxis dataKey="name" axisLine={false} tickLine={false} />
