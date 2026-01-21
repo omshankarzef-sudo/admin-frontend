@@ -1,7 +1,7 @@
 import { useStore, Teacher } from "@/lib/store";
 import { GenericTable } from "@/components/dashboard/GenericTable";
 import { Button } from "@/components/ui/button";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -48,6 +48,10 @@ export default function TeachersPage() {
     reset();
   };
 
+  const handleExport = () => {
+    window.print();
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -55,53 +59,64 @@ export default function TeachersPage() {
           <h1 className="text-3xl font-display font-bold tracking-tight">Teachers</h1>
           <p className="text-muted-foreground mt-2">Manage faculty members and assignments.</p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="shrink-0">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Teacher
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Add New Teacher</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" {...register("name", { required: true })} placeholder="Sarah Wilson" />
-                {errors.name && <span className="text-xs text-destructive">Name is required</span>}
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" {...register("email", { required: true })} placeholder="sarah@example.com" />
-                {errors.email && <span className="text-xs text-destructive">Email is required</span>}
-              </div>
-              
-              <div className="space-y-2">
-                 <Label htmlFor="subjects">Primary Subject</Label>
-                 <select 
-                  id="subjects" 
-                  {...register("subjects", { required: true })}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                 >
-                   <option value="">Select Subject</option>
-                   {subjects.map(sub => (
-                     <option key={sub.id} value={sub.name}>{sub.name}</option>
-                   ))}
-                 </select>
-              </div>
-              
-              <div className="flex justify-end pt-4">
-                <Button type="submit">Create Teacher</Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <div className="flex gap-2 print:hidden">
+          <Button variant="outline" onClick={handleExport}>
+            <Download className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="shrink-0">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Teacher
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Add New Teacher</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input id="name" {...register("name", { required: true })} placeholder="Sarah Wilson" />
+                  {errors.name && <span className="text-xs text-destructive">Name is required</span>}
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" {...register("email", { required: true })} placeholder="sarah@example.com" />
+                  {errors.email && <span className="text-xs text-destructive">Email is required</span>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password">Login Password</Label>
+                  <Input id="password" type="password" {...register("password", { required: true })} placeholder="••••••••" />
+                </div>
+                
+                <div className="space-y-2">
+                   <Label htmlFor="subjects">Primary Subject</Label>
+                   <select 
+                    id="subjects" 
+                    {...register("subjects", { required: true })}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                   >
+                     <option value="">Select Subject</option>
+                     {subjects.map(sub => (
+                       <option key={sub.id} value={sub.name}>{sub.name}</option>
+                     ))}
+                   </select>
+                </div>
+                
+                <div className="flex justify-end pt-4">
+                  <Button type="submit">Create Teacher</Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
-      <div className="flex items-center space-x-2 bg-card p-2 rounded-lg border shadow-sm max-w-sm">
+      <div className="flex items-center space-x-2 bg-card p-2 rounded-lg border shadow-sm max-w-sm print:hidden">
         <Search className="h-4 w-4 text-muted-foreground ml-2" />
         <Input 
           placeholder="Search teachers..." 
@@ -128,6 +143,7 @@ export default function TeachersPage() {
             )
           },
           { header: "Email", accessorKey: "email" },
+          { header: "Password", cell: (teacher) => <code className="text-xs bg-muted px-1 rounded">{teacher.password || '••••••'}</code> },
           { 
             header: "Subjects", 
             cell: (teacher) => (

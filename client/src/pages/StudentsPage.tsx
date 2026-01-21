@@ -1,7 +1,7 @@
 import { useStore, Student } from "@/lib/store";
 import { GenericTable } from "@/components/dashboard/GenericTable";
 import { Button } from "@/components/ui/button";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -43,6 +43,10 @@ export default function StudentsPage() {
     reset();
   };
 
+  const handleExport = () => {
+    window.print();
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -50,59 +54,70 @@ export default function StudentsPage() {
           <h1 className="text-3xl font-display font-bold tracking-tight">Students</h1>
           <p className="text-muted-foreground mt-2">Manage student records and performance.</p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="shrink-0">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Student
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Add New Student</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input id="name" {...register("name", { required: true })} placeholder="John Doe" />
-                {errors.name && <span className="text-xs text-destructive">Name is required</span>}
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" {...register("email", { required: true })} placeholder="john@example.com" />
-                {errors.email && <span className="text-xs text-destructive">Email is required</span>}
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
+        <div className="flex gap-2 print:hidden">
+          <Button variant="outline" onClick={handleExport}>
+            <Download className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="shrink-0">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Student
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Add New Student</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="rollNumber">Roll Number</Label>
-                  <Input id="rollNumber" {...register("rollNumber", { required: true })} placeholder="A001" />
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input id="name" {...register("name", { required: true })} placeholder="John Doe" />
+                  {errors.name && <span className="text-xs text-destructive">Name is required</span>}
                 </div>
+                
                 <div className="space-y-2">
-                   <Label htmlFor="classId">Class</Label>
-                   <select 
-                    id="classId" 
-                    {...register("classId", { required: true })}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                   >
-                     <option value="">Select Class</option>
-                     {classes.map(cls => (
-                       <option key={cls.id} value={cls.id}>{cls.name}</option>
-                     ))}
-                   </select>
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" type="email" {...register("email", { required: true })} placeholder="john@example.com" />
+                  {errors.email && <span className="text-xs text-destructive">Email is required</span>}
                 </div>
-              </div>
-              
-              <div className="flex justify-end pt-4">
-                <Button type="submit">Create Student</Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password">Login Password</Label>
+                  <Input id="password" type="password" {...register("password", { required: true })} placeholder="••••••••" />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="rollNumber">Roll Number</Label>
+                    <Input id="rollNumber" {...register("rollNumber", { required: true })} placeholder="A001" />
+                  </div>
+                  <div className="space-y-2">
+                     <Label htmlFor="classId">Class</Label>
+                     <select 
+                      id="classId" 
+                      {...register("classId", { required: true })}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                     >
+                       <option value="">Select Class</option>
+                       {classes.map(cls => (
+                         <option key={cls.id} value={cls.id}>{cls.name}</option>
+                       ))}
+                     </select>
+                  </div>
+                </div>
+                
+                <div className="flex justify-end pt-4">
+                  <Button type="submit">Create Student</Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
-      <div className="flex items-center space-x-2 bg-card p-2 rounded-lg border shadow-sm max-w-sm">
+      <div className="flex items-center space-x-2 bg-card p-2 rounded-lg border shadow-sm max-w-sm print:hidden">
         <Search className="h-4 w-4 text-muted-foreground ml-2" />
         <Input 
           placeholder="Search students..." 
@@ -129,6 +144,7 @@ export default function StudentsPage() {
             )
           },
           { header: "Email", accessorKey: "email" },
+          { header: "Password", cell: (student) => <code className="text-xs bg-muted px-1 rounded">{student.password || '••••••'}</code> },
           { header: "Roll No", accessorKey: "rollNumber" },
           { 
             header: "Class", 

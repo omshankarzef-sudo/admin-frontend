@@ -8,6 +8,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  password?: string;
   role: UserRole;
   avatar?: string;
   status: 'active' | 'inactive';
@@ -25,6 +26,7 @@ export interface Teacher extends User {
   role: 'teacher';
   subjects: string[];
   classes: string[];
+  totalQuizzes?: number;
 }
 
 export interface Class {
@@ -71,16 +73,16 @@ interface AppState {
 
 // Mock Initial Data
 const INITIAL_STUDENTS: Student[] = [
-  { id: 's1', name: 'Alice Johnson', email: 'alice@school.com', role: 'student', status: 'active', rollNumber: 'A001', classId: 'c1', attendance: 92, averageScore: 88 },
-  { id: 's2', name: 'Bob Smith', email: 'bob@school.com', role: 'student', status: 'active', rollNumber: 'A002', classId: 'c1', attendance: 85, averageScore: 76 },
-  { id: 's3', name: 'Charlie Davis', email: 'charlie@school.com', role: 'student', status: 'inactive', rollNumber: 'A003', classId: 'c2', attendance: 40, averageScore: 55 },
-  { id: 's4', name: 'Diana Prince', email: 'diana@school.com', role: 'student', status: 'active', rollNumber: 'B001', classId: 'c2', attendance: 98, averageScore: 95 },
+  { id: 's1', name: 'Alice Johnson', email: 'alice@school.com', password: 'password123', role: 'student', status: 'active', rollNumber: 'A001', classId: 'c1', attendance: 92, averageScore: 88 },
+  { id: 's2', name: 'Bob Smith', email: 'bob@school.com', password: 'password123', role: 'student', status: 'active', rollNumber: 'A002', classId: 'c1', attendance: 85, averageScore: 76 },
+  { id: 's3', name: 'Charlie Davis', email: 'charlie@school.com', password: 'password123', role: 'student', status: 'inactive', rollNumber: 'A003', classId: 'c2', attendance: 40, averageScore: 55 },
+  { id: 's4', name: 'Diana Prince', email: 'diana@school.com', password: 'password123', role: 'student', status: 'active', rollNumber: 'B001', classId: 'c2', attendance: 98, averageScore: 95 },
 ];
 
 const INITIAL_TEACHERS: Teacher[] = [
-  { id: 't1', name: 'Sarah Wilson', email: 'sarah@school.com', role: 'teacher', status: 'active', subjects: ['Mathematics', 'Physics'], classes: ['c1', 'c2'] },
-  { id: 't2', name: 'Mike Brown', email: 'mike@school.com', role: 'teacher', status: 'active', subjects: ['English', 'History'], classes: ['c1'] },
-  { id: 't3', name: 'Emily Clark', email: 'emily@school.com', role: 'teacher', status: 'active', subjects: ['Biology', 'Chemistry'], classes: ['c2'] },
+  { id: 't1', name: 'Sarah Wilson', email: 'sarah@school.com', password: 'password123', role: 'teacher', status: 'active', subjects: ['Mathematics', 'Physics'], classes: ['c1', 'c2'], totalQuizzes: 12 },
+  { id: 't2', name: 'Mike Brown', email: 'mike@school.com', password: 'password123', role: 'teacher', status: 'active', subjects: ['English', 'History'], classes: ['c1'], totalQuizzes: 8 },
+  { id: 't3', name: 'Emily Clark', email: 'emily@school.com', password: 'password123', role: 'teacher', status: 'active', subjects: ['Biology', 'Chemistry'], classes: ['c2'], totalQuizzes: 15 },
 ];
 
 const INITIAL_CLASSES: Class[] = [
@@ -131,7 +133,8 @@ export const useStore = create<AppState>((set) => ({
     teachers: [...state.teachers, {
       ...teacher,
       id: `t${Date.now()}`,
-      role: 'teacher'
+      role: 'teacher',
+      totalQuizzes: 0
     }]
   })),
 
